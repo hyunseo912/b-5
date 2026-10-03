@@ -1,0 +1,5 @@
+# 맥·윈도우가 섞여도 줄바꿈 충돌이 안 나게 LF로 통일
+* text=auto eol=lf
+*.xlsx binary
+*.png binary
+*.jpg binary
