@@ -21,7 +21,16 @@ const ICON={
 };
 const tile=(ic,bg)=>`<span class="tile" style="background:${bg}">${ICON[ic]}</span>`;
 
+/* ===== 저장 (localStorage) — 키 접두사 dm:, 못 쓰는 환경에서도 멈추지 않게 try/catch ===== */
+const LS={
+  get(k,def=null){try{const v=localStorage.getItem("dm:"+k);return v===null?def:JSON.parse(v);}catch(e){return def;}},
+  set(k,v){try{localStorage.setItem("dm:"+k,JSON.stringify(v));}catch(e){}}
+};
+// 지금 모임을 모임 목록(dm:meetings)에 저장하고, 마지막으로 본 모임(dm:last)·화면(dm:screen)도 기억
+function saveMeeting(){if(!S.meeting)return;const list=LS.get("meetings",[]),ms=Array.isArray(list)?list.filter(m=>m&&m.code!==S.meeting.code):[];
+  ms.push(S.meeting);LS.set("meetings",ms);LS.set("last",S.meeting.code);LS.set("screen",S.screen);}
+
 /* ===== 화면 그리기 ===== */
-function render(){document.getElementById("app").innerHTML=V[S.screen]();}
+function render(){document.getElementById("app").innerHTML=V[S.screen]();saveMeeting();}
 function keep(){const y=window.scrollY;render();window.scrollTo(0,y);}
 function closeLayer(){document.getElementById("layer").innerHTML="";}
