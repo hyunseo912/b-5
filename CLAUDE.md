@@ -91,7 +91,7 @@ js/app.js                   시작 (render 호출, 맨 마지막에 로드)
 ## 8. 데이터 형식 (명세 2장)
 
 ```js
-meeting     = { code: "K7M2Q9", name: "콘텐츠팀 회식", people: [participant, …] }
+meeting     = { code: "K7M2Q9", name: "콘텐츠팀 회식", start: "2026-10-04", people: [participant, …] }
 participant = { id: "김민준3184", isHost: false, note: "갑각류 알레르기가 있어요",
                 slots: ["2026-10-16|저녁"], places: ["강남"], likes: ["한식"], dislikes: ["멕시칸"],
                 drink: "O" | "△" | "X" | null }
@@ -99,6 +99,7 @@ participant = { id: "김민준3184", isHost: false, note: "갑각류 알레르�
 
 | 필드 | 규칙 |
 |---|---|
+| `start` | 날짜 투표 시작일 `YYYY-MM-DD` (02에서 방장이 지정, 오늘 이후). 달력은 start ~ 3개월 뒤 전날까지만 선택 가능, 지난 날짜·범위 밖은 흐리게. 없으면(⚡ 데모) data.js의 YEAR·MONTH 1일 |
 | `code` | 대문자+숫자 6자리, `O·0·I·1` 제외. 입력은 대소문자 무시 |
 | `id` | `/^[가-힣A-Za-z]{1,10}\d{4}$/`, 모임 안에서 중복 불가 → 같은 ID로 다시 입장하면 이전 응답 수정 |
 | `slots` | `YYYY-MM-DD\|점심` 또는 `\|저녁`, **1개 이상 필수** |

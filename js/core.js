@@ -20,6 +20,8 @@ const ICON={
   sum:`<svg viewBox="0 0 24 24" fill="none" stroke="#4F67A8" stroke-width="2" stroke-linecap="round"><rect x="5" y="3.5" width="14" height="17" rx="3"/><path d="M9 8.5h6M9 12h6M9 15.5h4"/></svg>`
 };
 const tile=(ic,bg)=>`<span class="tile" style="background:${bg}">${ICON[ic]}</span>`;
+// 날짜 → "YYYY-MM-DD" (슬롯 키·날짜 비교용), 인자 없으면 오늘
+const ymd=(dt=new Date())=>`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
 
 /* ===== 저장 (localStorage) — 키 접두사 dm:, 못 쓰는 환경에서도 멈추지 않게 try/catch ===== */
 const LS={

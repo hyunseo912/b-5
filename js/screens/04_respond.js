@@ -1,18 +1,31 @@
 /* ===== 04 응답 (달력·장소·메뉴·음주) + 접수 팝업 ===== */
-function calendar(){const d=S.draft,first=new Date(YEAR,MONTH-1,1).getDay(),days=new Date(YEAR,MONTH,0).getDate();
+/* 달력 범위: 방장이 정한 시작일(meeting.start)부터 3개월. 지난 날짜·범위 밖 날짜는 흐리게 + 선택 불가
+ * 시작일이 없는 모임(⚡ 데모 등)은 data.js의 YEAR·MONTH 1일을 시작일로 사용 */
+function calRange(){const st=(S.meeting&&S.meeting.start)||`${YEAR}-${String(MONTH).padStart(2,"0")}-01`,[y,m,dd]=st.split("-").map(Number);
+  const end=ymd(new Date(y,m-1+3,dd-1)),today=ymd(),from=st>today?st:today,mi=k=>{const[a,b]=k.split("-").map(Number);return a*12+b-1;};
+  return {from,to:end,fromM:Math.min(mi(from),mi(end)),toM:mi(end)};}
+// 보고 있는 달(S.calM = 연*12+월): 모임·참여자가 바뀌면 첫 선택 날짜(없으면 선택 가능 첫 달)로 맞춤
+function calInit(r){const who=S.meeting.code+"|"+S.draft.id;
+  if(S.calFor!==who){const f=S.draft.slots.map(x=>x.split("|")[0]).filter(k=>k>=r.from&&k<=r.to).sort()[0]||r.from,[a,b]=f.split("-").map(Number);S.calM=a*12+b-1;S.calFor=who;}
+  S.calM=Math.min(Math.max(S.calM,r.fromM),r.toM);}
+function calMove(n){const r=calRange();S.calM=Math.min(Math.max(S.calM+n,r.fromM),r.toM);keep();}
+function calendar(r){const d=S.draft,y=Math.floor(S.calM/12),mo=S.calM%12+1,first=new Date(y,mo-1,1).getDay(),days=new Date(y,mo,0).getDate();
   let h=WD.map((w,i)=>`<div class="wd${i===0?" sun":i===6?" sat":""}">${w}</div>`).join("");
   for(let i=0;i<first;i++)h+="<div></div>";
-  for(let day=1;day<=days;day++){const k=dayKey(MONTH,day),dow=new Date(YEAR,MONTH-1,day).getDay(),sel=SLOTS.map(s=>d.slots.includes(`${k}|${s}`));
-    h+=`<button class="day${sel.some(Boolean)?" has":""}${S.activeDay===k?" act":""}${dow===0?" sun":dow===6?" sat":""}" onclick="pickDay('${k}')" aria-label="${MONTH}월 ${day}일"><span>${day}</span><span class="dots">${sel.map(f=>`<i class="dot${f?" f":""}"></i>`).join("")}</span></button>`;}
+  for(let day=1;day<=days;day++){const k=ymd(new Date(y,mo-1,day)),dow=new Date(y,mo-1,day).getDay(),sel=SLOTS.map(s=>d.slots.includes(`${k}|${s}`)),off=k<r.from||k>r.to;
+    h+=`<button class="day${sel.some(Boolean)?" has":""}${S.activeDay===k?" act":""}${dow===0?" sun":dow===6?" sat":""}" ${off?`disabled style="opacity:.25;cursor:default"`:`onclick="pickDay('${k}')"`} aria-label="${mo}월 ${day}일${off?" (선택 불가)":""}"><span>${day}</span><span class="dots">${sel.map(f=>`<i class="dot${f?" f":""}"></i>`).join("")}</span></button>`;}
   return h;}
-V.respond=()=>{const d=S.draft,ad=S.activeDay,adL=ad?slotLabel(ad+"|").replace(/\s$/,""):"날짜를 눌러 주세요";
+function calNav(r){const y=Math.floor(S.calM/12),mo=S.calM%12+1,arrow=(n,ch,lab,dis)=>`<button type="button" aria-label="${lab}" ${dis?"disabled":`onclick="calMove(${n})"`} style="font-size:22px;line-height:1;width:36px;height:32px;color:${dis?"var(--disabled)":"var(--text)"};cursor:${dis?"default":"pointer"}">${ch}</button>`;
+  return `<div class="cal-nav">${arrow(-1,"‹","이전 달",S.calM<=r.fromM)}${y}년 ${mo}월${arrow(1,"›","다음 달",S.calM>=r.toM)}</div>`;}
+V.respond=()=>{const d=S.draft,r=calRange();calInit(r);
+  const ad=S.activeDay&&S.activeDay>=r.from&&S.activeDay<=r.to?S.activeDay:null,adL=ad?slotLabel(ad+"|").replace(/\s$/,""):"날짜를 눌러 주세요";
   const chip=(f,v,dark)=>{const on=d[f].includes(v),o=f==="likes"?"dislikes":f==="dislikes"?"likes":null,dis=!on&&(d[f].length>=3||(o&&d[o].includes(v)));
     return `<button class="chip${on?" on":""}${on&&dark?" dark":""}" ${dis?"disabled":""} aria-pressed="${on}" onclick="tog('${f}','${v}')">${v}</button>`;};
   const dm=DRINK.find(x=>x.value===d.drink);
   return `<div class="screen">${head(S.meeting.name,"join")}
 <div class="body" style="gap:14px">
   <h2 class="section-t">1. 날짜 선택</h2>
-  <div class="calcard"><div class="cal-nav"><span aria-hidden="true">‹</span>${YEAR}년 ${MONTH}월<span aria-hidden="true">›</span></div><div class="cal">${calendar()}</div></div>
+  <div class="calcard">${calNav(r)}<div class="cal">${calendar(r)}</div><p class="hint" style="text-align:center">선택 가능 기간 ${slotLabel(r.from+"|").trim()} ~ ${slotLabel(r.to+"|").trim()}</p></div>
   <div class="slot-row"><b>${adL}</b><span class="rn">복수 선택 가능</span></div>
   <div class="grid2 c-time">${SLOTS.map(s=>{const on=ad&&d.slots.includes(`${ad}|${s}`);return `<button class="chip${on?" on":""}" ${ad?"":"disabled"} aria-pressed="${!!on}" onclick="togSlot('${s}')">${s}</button>`;}).join("")}</div>
   <div class="legend"><i class="dot"></i>→<i class="dot f"></i> 점심 · 저녁 (위부터)</div>
