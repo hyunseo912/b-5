@@ -12,7 +12,8 @@ V.dash=()=>{const R=results(),M=S.meeting,recs=recommendations(R),ids=M.people.m
   <div class="card"><div class="card-h">${tile("pin","var(--t-sky)")}<span class="ttl">장소</span><button class="more" onclick="detail('places')">상세 ›</button></div>${list(R.places,it)}</div>
   <div class="card"><div class="card-h">${tile("fork","var(--t-mint)")}<span class="ttl">메뉴</span><button class="more" onclick="detail('menus')">상세 ›</button></div>
     <div class="grid2"><div class="mbox like"><b>🙂 이 메뉴는 좋아요</b>${ml(R.likes)}</div><div class="mbox dis"><b>🙁 이 메뉴는 싫어요</b>${ml(R.dislikes)}</div></div>
-    ${rec?`<button class="rec" onclick="S.recIdx++;keep()">오늘은 이 메뉴 어때요? <u>${esc(rec)}</u></button>`:""}
+    ${/* 문구는 텍스트로만 보여주고, 메뉴 이름 옆 ↻ 버튼으로 다음 추천 메뉴 보기 */""}
+    ${rec?`<p class="rec">오늘은 이 메뉴 어때요? <u>${esc(rec)}</u> <button type="button" onclick="S.recIdx++;keep()" aria-label="다른 메뉴 추천 보기" title="다른 메뉴 보기" style="font-size:15px;color:var(--accent);padding:2px 6px;vertical-align:middle;cursor:pointer">↻</button></p>`:""}
   </div>
   <div class="card"><div class="card-h">${tile("cup","var(--t-lilac)")}<span class="ttl">오늘 술 한 잔?</span></div>
     ${top>0?`<div class="grid3">${DRINK.map(x=>`<div class="dtile${R.drink[x.value]===top?" top":""}">${x.value} <span>(${R.drink[x.value]}표)</span></div>`).join("")}</div>`:`<p class="rn">아직 응답이 없어요</p>`}
