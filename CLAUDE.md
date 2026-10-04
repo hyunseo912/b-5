@@ -57,20 +57,28 @@ Claude Code가 이 저장소에서 작업할 때 반드시 따르는 규칙입�
 
 ## 6. 현재 상태와 파일 구조
 
-- 지금 루트의 `index.html`은 **모의앱 v4.1의 임시 복사본** (한 파일에 HTML·CSS·JS가 모두 들어 있음)
-- 첫 작업으로 아래처럼 나눈다. 나눈 뒤에는 각자 **자기가 맡은 파일만** 수정한다
+- 모의앱 v4.1을 **동작은 그대로 두고 화면별 파일로 나눈 상태** (원본은 `컨텐츠팀전달파일/`에 그대로 있음)
+- 각자 **자기가 맡은 화면 파일만** 수정한다. 공용 파일(★)을 고칠 땐 톡방에 한 줄 공유
 
 ```
-index.html          화면 틀 + <script> 순서대로 로드
-css/style.css       스타일 (모의앱 <style>)
-js/data.js          CONFIG(장소·메뉴·시간대·음주·MENU_DB) + DEMO(샘플데이터 10명)
-js/util.js          공통 유틸: esc, toast, copy, slotLabel, genCode, LS(localStorage 도우미)
-js/rank.js          집계: rank, results, recommendations, summaryLines, summaryText
-js/screens.js       화면(V.home, V.create, V.join, V.respond, V.dash) + 상세 시트
-js/app.js           상태(S)·동작 함수·화면 전환·시작 (맨 마지막에 로드)
+index.html                  화면 틀 + <script> 순서대로 로드 (순서 바꾸지 말 것)
+img/hero.jpg                01 진입 배경 그림 (AI 생성)
+css/style.css         ★     스타일 전체
+js/data.js            ★     DATA: config(장소·메뉴·시간대·음주·MENU_DB) + meeting·participants(⚡ 데모 10명)
+js/core.js            ★     상태 S, 화면 등록 V, 유틸(esc, toast, copy, go, head, ICON, tile, genCode, newMeeting), render·keep·closeLayer
+js/rank.js            ★     집계: rank, tally, voters, results, recommendations, summaryLines, summaryText, slotLabel
+js/screens/01_home.js       01 진입 — V.home, loadDemo(⚡ 데모), openDash
+js/screens/02_create.js     02 모임 생성 — V.create, makeLink
+js/screens/03_join.js       03 초대장 열기 — V.join, enter
+js/screens/04_respond.js    04 응답(달력·장소·메뉴·음주) + 접수 팝업 — calendar, V.respond, pickDay, togSlot, tog, confirmResp
+js/screens/05_dashboard.js  05 대시보드 — V.dash
+js/screens/06_detail.js     06 상세 시트 — rankBlock, detail
+js/app.js                   시작 (render 호출, 맨 마지막에 로드)
 ```
 
-- 화면 파일이 커지면 `js/screens/01_home.js`처럼 화면별로 더 나눠도 된다 (나누기 전에 팀에 공유)
+- 모든 파일은 일반 `<script>`라 함수·변수가 전역으로 공유된다. 같은 이름의 함수·변수를 새로 만들지 말 것 (덮어쓰기 충돌)
+- 화면은 `V.이름 = () => \`HTML\``로 등록하고 `go('이름')`으로 이동한다. 버튼 동작은 `onclick="함수()"` 방식 유지
+- 새 화면 파일을 추가하면 `index.html`의 `<script>` 목록에도 넣는다 (`core.js` 뒤, `app.js` 앞)
 
 ## 7. 저장 (localStorage)
 
@@ -113,7 +121,7 @@ participant = { id: "김민준3184", isHost: false, note: "갑각류 알레르�
 
 ## 11. 코드 스타일
 
-- 공통 유틸(`util.js`)을 재사용하고 같은 기능을 새로 만들지 않는다
+- 공통 유틸(`js/core.js`)을 재사용하고 같은 기능을 새로 만들지 않는다
 - 사용자 입력(모임 이름, ID, 확인해주세요)을 `innerHTML`에 넣을 땐 **반드시 `esc()`**
 - 사용자에게 보이는 문구는 **명세의 문구를 그대로** 쓴다. 새 문구는 친근한 존댓말("~해 주세요", "~했어요")
 - 주석은 한국어로 짧게. 한 번에 다 만들지 말고 기능 하나씩 → 직접 눌러 확인 → push
@@ -132,7 +140,7 @@ participant = { id: "김민준3184", isHost: false, note: "갑각류 알레르�
 | 충돌·오류 시 | "충돌을 해결해줘. 다른 사람이 작업한 내용은 지우지 말고, 무엇이 겹쳤는지 설명해줘." |
 
 - 시작 전 최신 내용 받기, 끝나면 바로 올리기 (오래 들고 있을수록 충돌↑)
-- 여러 사람이 같이 쓰는 파일(`css/style.css`, `js/app.js`, `js/util.js`)을 고칠 땐 톡방에 한 줄 공유
+- 여러 사람이 같이 쓰는 파일(`css/style.css`, `js/data.js`, `js/core.js`, `js/rank.js`)을 고칠 땐 톡방에 한 줄 공유
 - 커밋 메시지: `[이름] 무엇을 바꿨는지 한 줄` (예: `[윤원] 달력 월 이동 추가`) — 9명 기여 증빙용
 - 충돌 시 남의 코드를 지우지 않는다
 - push 후 1~2분 뒤 Vercel 주소에서 반영 확인
