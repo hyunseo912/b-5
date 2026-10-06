@@ -39,6 +39,8 @@ input{font:inherit;color:inherit}
 .field label small{font-size:14px;font-weight:400}
 .inp{height:54px;border-radius:16px;background:var(--card);border:1px solid var(--line);padding:0 18px;font-size:17px;width:100%}
 .inp::placeholder{color:#A0918A;font-size:16px}
+/* 아이폰(iOS Safari): 날짜 입력칸이 고유 폭 때문에 화면 밖으로 나가는 문제 → 기본 모양을 끄고 폭을 부모에 맞춤 */
+@supports (-webkit-touch-callout:none){input[type="date"].inp{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;line-height:normal;text-align:left}input[type="date"].inp::-webkit-date-and-time-value{text-align:left;margin:0}}
 .err{font-size:14px;color:var(--rose)}
 .hint{font-size:13px;color:var(--text2);padding-left:4px}
 
