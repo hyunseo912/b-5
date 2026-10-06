@@ -6,7 +6,7 @@ const V={}; // 화면 등록: V.home, V.create, V.join, V.respond, V.dash
 
 /* ===== 유틸 ===== */
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800);}
+function toast(m){const t=document.createElement("div");t.className="toast";t.style.whiteSpace="pre-line";t.style.width="max-content";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800);}
 async function copy(text,btn){try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(_){}ta.remove();}
   if(btn){const o=btn.textContent;btn.textContent="복사됨";setTimeout(()=>btn.textContent=o,1500);}}
 function go(s){S.screen=s;S.err={};render();window.scrollTo(0,0);}

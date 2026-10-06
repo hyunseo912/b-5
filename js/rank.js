@@ -25,8 +25,19 @@ function recommendations(R){ const t=R.notes.map(x=>x.note).join(" "),ok=c=>(MEN
   const bad=new Set(R.dislikes.flatMap(g=>g.items)),lists=MENUS.filter(c=>!bad.has(c)).map(ok),out=[];
   for(let i=0;lists.some(l=>l[i]);i++) lists.forEach(l=>{if(l[i])out.push(l[i]);});
   return out; }
+// 종합 추천 한 줄: 1위 날짜 · 1위 장소 · 좋아요 1위 메뉴(없으면 추천 세부 메뉴) · 술 분위기. 날짜 1위가 없으면 생략
+function recommendLine(R){
+  const parts=[];
+  if(R.dates.length)parts.push(R.dates[0].items.map(slotLabel).join(" 또는 "));
+  if(R.places.length)parts.push(R.places[0].items.join(" 또는 "));else if(R.anyPlace.length)parts.push("장소는 자유롭게");
+  if(R.likes.length)parts.push(R.likes[0].items.join(" 또는 "));else{const rec=recommendations(R);if(rec.length)parts.push(rec[0]);}
+  const d=R.drink,top=Math.max(d.O||0,d["△"]||0,d.X||0);
+  if(top>0)parts.push(d.O===top?"술 한 잔과 함께":d["△"]===top?"가볍게 한두 잔":"음료로 건배");
+  return parts.length?"추천: "+parts.join(" · "):"";
+}
 function summaryLines(R){
   const L=[["t",`[${S.meeting.name}] 모임 결과 요약 (${R.n}명 참여)`]];
+  const rec=recommendLine(R); if(rec)L.push(["r",rec]);
   L.push(["l","날짜"]); R.dates.forEach(g=>L.push(["i",`${g.label} ${g.items.map(slotLabel).join(" · ")} (${g.votes}표)`+(g.rank===1&&g.votes===R.n?" [만장일치]":"")]));
   if(R.places.length||R.anyPlace.length){L.push(["l","장소"]); R.places.forEach(g=>L.push(["i",`${g.label} ${g.items.join(" · ")} (${g.votes}표)`])); if(R.anyPlace.length)L.push(["i",`아무 데나 괜찮아요 ${R.anyPlace.length}명`]);}
   const lk=R.likes.filter(g=>g.rank<=2).flatMap(g=>g.items).join(", "), dk=R.dislikes.length?R.dislikes[0].items.join(", "):"";
@@ -34,4 +45,4 @@ function summaryLines(R){
   const d=Object.entries(R.drink).filter(([,v])=>v>0).map(([k,v])=>`${k} ${v}`).join(" · ");
   L.push(["l","술자리"],["i",d||"응답 없음"],["u",`상세 결과 보기: ${S.meeting.link}`]); return L;
 }
-const summaryText=R=>{const L=summaryLines(R);return L.map(([t,s],i)=>t==="i"?"  "+s:(t==="l"&&L[i-1][0]==="t"?"\n"+s:t==="u"?"\n"+s:s)).join("\n");};
+const summaryText=R=>{const L=summaryLines(R);return L.map(([t,s])=>t==="i"?"  "+s:t==="l"||t==="u"||t==="r"?"\n"+s:s).join("\n");};
