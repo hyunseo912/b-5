@@ -7,15 +7,17 @@ V.dash=()=>{const R=results(),M=S.meeting,recs=recommendations(R),ids=M.people.m
   const ml=gs=>gs.length?gs.map(g=>g.items.length>1?`<span class="mrow"><span class="mtie">${g.label}</span><span class="nw">${g.items.map(esc).join(" · ")} (${g.votes})</span></span>`:`<span class="mrow nw">${g.label} ${esc(g.items[0])} (${g.votes})</span>`).join(""):`<span class="rn">없음</span>`;
   const top=Math.max(...Object.values(R.drink)), rec=recs.length?recs[S.recIdx%recs.length]:null;
   const sl=summaryLines(R);
+  // '상관없음' 인원 한 줄 (전원이 상관없으면 '모두 …'로 표시)
+  const anyLine=(ids,lab)=>!ids.length?"":ids.length===R.n?`<p class="r1">모두 ${lab} (${ids.length}명)</p>`:`<p class="rn">${lab} · ${ids.length}명</p>`;
   return `<div class="screen">${head(M.name+" 대시보드","home")}
 <div class="body">
   ${/* 참여 인원: 누르면 참여자 ID 전체를 펼치고 다시 누르면 접기 */""}
   <div class="idrow">${R.n?`<button type="button" class="cnt" onclick="S.peopleOpen=!S.peopleOpen;keep()" aria-expanded="${!!S.peopleOpen}" style="font-weight:600;color:var(--accent);padding:4px 0;cursor:pointer">참여 ${R.n}명 ${S.peopleOpen?"▴":"▾"}</button>`:`<span class="cnt">참여 0명</span>`}</div>
   ${S.peopleOpen&&R.n?`<div class="voters">${ids.map(i=>`<span class="idchip" style="background:var(--card);border-color:var(--line)">${esc(i)}</span>`).join("")}</div>`:""}
   <div class="card"><div class="card-h">${tile("cal","var(--t-peach)")}<span class="ttl">날짜</span><button class="more" onclick="detail('slots')">상세 ›</button></div>${list(R.dates,g=>g.items.map(slotLabel).join(" · "),true)}</div>
-  <div class="card"><div class="card-h">${tile("pin","var(--t-sky)")}<span class="ttl">장소</span><button class="more" onclick="detail('places')">상세 ›</button></div>${list(R.places,it)}</div>
+  <div class="card"><div class="card-h">${tile("pin","var(--t-sky)")}<span class="ttl">장소</span><button class="more" onclick="detail('places')">상세 ›</button></div>${R.places.length||!R.anyPlace.length?list(R.places,it):""}${anyLine(R.anyPlace,"아무 데나 괜찮아요")}</div>
   <div class="card"><div class="card-h">${tile("fork","var(--t-mint)")}<span class="ttl">메뉴</span><button class="more" onclick="detail('menus')">상세 ›</button></div>
-    <div class="grid2"><div class="mbox like" style="${MB.box}"><b style="${MB.t}">🙂 이 메뉴는 좋아요</b>${ml(R.likes)}</div><div class="mbox dis" style="${MB.box}"><b style="${MB.t}">🙁 이 메뉴는 싫어요</b>${ml(R.dislikes)}</div></div>
+    <div class="grid2"><div class="mbox like" style="${MB.box}"><b style="${MB.t}">🙂 이 메뉴는 좋아요</b>${R.likes.length||!R.anyMenu.length?ml(R.likes):""}${R.anyMenu.length?`<span class="mrow nw" style="font-size:13px;opacity:.8">아무거나 · ${R.anyMenu.length}명</span>`:""}</div><div class="mbox dis" style="${MB.box}"><b style="${MB.t}">🙁 이 메뉴는 싫어요</b>${ml(R.dislikes)}</div></div>
     ${/* 문구는 텍스트로만 보여주고, 메뉴 이름 옆 ↻ 버튼으로 다음 추천 메뉴 보기 */""}
     ${rec?`<p class="rec">오늘은 이 메뉴 어때요? <u>${esc(rec)}</u> <button type="button" onclick="S.recIdx++;keep()" aria-label="다른 메뉴 추천 보기" title="다른 메뉴 보기" style="font-size:15px;color:var(--accent);padding:2px 6px;vertical-align:middle;cursor:pointer">↻</button></p>`:""}
   </div>

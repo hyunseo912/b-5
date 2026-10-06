@@ -15,16 +15,22 @@ function results(){
   const ppl=S.meeting.people, drink={}; DRINK.forEach(d=>drink[d.value]=ppl.filter(p=>p.drink===d.value).length);
   return {n:ppl.length, dates:rank(tally("slots"),(a,b)=>a<b?-1:1), places:rank(tally("places"),byList(PLACES)),
     likes:rank(tally("likes"),byList(MENUS)), dislikes:rank(tally("dislikes"),byList(MENUS)), drink,
-    notes:ppl.filter(p=>p.note).map(p=>({id:p.id,note:p.note}))};
+    notes:ppl.filter(p=>p.note).map(p=>({id:p.id,note:p.note})),
+    anyPlace:ppl.filter(p=>p.anyPlace).map(p=>p.id), anyMenu:ppl.filter(p=>p.anyMenu).map(p=>p.id)}; // '상관없음'을 고른 사람 (표로 세지 않음)
 }
-function recommendations(R){ if(!R.likes.length) return []; const t=R.notes.map(x=>x.note).join(" ");
-  return R.likes[0].items.flatMap(c=>(MENU_DB[c]||[]).filter(([nm,tags])=>!tags.some(x=>t.includes(x))&&!t.includes(nm)).map(([nm])=>nm)); }
+function recommendations(R){ const t=R.notes.map(x=>x.note).join(" "),ok=c=>(MENU_DB[c]||[]).filter(([nm,tags])=>!tags.some(x=>t.includes(x))&&!t.includes(nm)).map(([nm])=>nm);
+  if(R.likes.length) return R.likes[0].items.flatMap(ok);
+  // 좋아요 표가 없고 '아무거나 괜찮아요'만 있을 때: 싫어요 받은 카테고리를 빼고, 카테고리마다 하나씩 번갈아 추천
+  if(!R.anyMenu.length) return [];
+  const bad=new Set(R.dislikes.flatMap(g=>g.items)),lists=MENUS.filter(c=>!bad.has(c)).map(ok),out=[];
+  for(let i=0;lists.some(l=>l[i]);i++) lists.forEach(l=>{if(l[i])out.push(l[i]);});
+  return out; }
 function summaryLines(R){
   const L=[["t",`[${S.meeting.name}] 모임 결과 요약 (${R.n}명 참여)`]];
   L.push(["l","날짜"]); R.dates.forEach(g=>L.push(["i",`${g.label} ${g.items.map(slotLabel).join(" · ")} (${g.votes}표)`+(g.rank===1&&g.votes===R.n?" [만장일치]":"")]));
-  if(R.places.length){L.push(["l","장소"]); R.places.forEach(g=>L.push(["i",`${g.label} ${g.items.join(" · ")} (${g.votes}표)`]));}
+  if(R.places.length||R.anyPlace.length){L.push(["l","장소"]); R.places.forEach(g=>L.push(["i",`${g.label} ${g.items.join(" · ")} (${g.votes}표)`])); if(R.anyPlace.length)L.push(["i",`아무 데나 괜찮아요 ${R.anyPlace.length}명`]);}
   const lk=R.likes.filter(g=>g.rank<=2).flatMap(g=>g.items).join(", "), dk=R.dislikes.length?R.dislikes[0].items.join(", "):"";
-  if(lk||dk){L.push(["l","메뉴"]); if(lk)L.push(["i",`좋아요 ${lk}`]); if(dk)L.push(["i",`싫어요 ${dk}`]);}
+  if(lk||dk||R.anyMenu.length){L.push(["l","메뉴"]); if(lk)L.push(["i",`좋아요 ${lk}`]); if(R.anyMenu.length)L.push(["i",`아무거나 괜찮아요 ${R.anyMenu.length}명`]); if(dk)L.push(["i",`싫어요 ${dk}`]);}
   const d=Object.entries(R.drink).filter(([,v])=>v>0).map(([k,v])=>`${k} ${v}`).join(" · ");
   L.push(["l","술자리"],["i",d||"응답 없음"],["u",`상세 결과 보기: ${S.meeting.link}`]); return L;
 }
