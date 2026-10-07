@@ -2,7 +2,8 @@
 /* 달력 범위: 방장이 정한 시작일(meeting.start)부터 3개월. 지난 날짜·범위 밖 날짜는 흐리게 + 선택 불가
  * 시작일이 없는 모임(⚡ 데모 등)은 data.js의 YEAR·MONTH 1일을 시작일로 사용 */
 function calRange(){const st=(S.meeting&&S.meeting.start)||`${YEAR}-${String(MONTH).padStart(2,"0")}-01`,[y,m,dd]=st.split("-").map(Number);
-  const end=ymd(new Date(y,m-1+3,dd-1)),today=ymd(),from=st>today?st:today,mi=k=>{const[a,b]=k.split("-").map(Number);return a*12+b-1;};
+  // 끝 날짜: 방장이 정한 마감일(meeting.end), 없으면 3개월 뒤 전날. 어느 쪽이든 3개월을 넘지 않게
+  const max=ymd(new Date(y,m-1+3,dd-1)),me=S.meeting&&S.meeting.end,end=me&&me>=st&&me<max?me:max,today=ymd(),from=st>today?st:today,mi=k=>{const[a,b]=k.split("-").map(Number);return a*12+b-1;};
   return {from,to:end,fromM:Math.min(mi(from),mi(end)),toM:mi(end)};}
 // 보고 있는 달(S.calM = 연*12+월): 모임·참여자가 바뀌면 첫 선택 날짜(없으면 선택 가능 첫 달)로 맞춤
 function calInit(r){const who=S.meeting.code+"|"+S.draft.id;
