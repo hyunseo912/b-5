@@ -13,7 +13,7 @@ V.find=()=>{const list=myMeetings();return `<div class="screen">${head("모임 �
       <span class="rn" style="font-size:13px">${esc(m.code)} · 참여 ${m.people.length}명${m.start?` · ${esc(slotLabel(m.start+"|").trim())}${m.end?` ~ ${esc(slotLabel(m.end+"|").trim())}`:" 시작"}`:""}</span></span>
       <span style="font-size:20px;color:var(--text2)" aria-hidden="true">›</span></button>
       <button class="btn btn-ghost" style="width:auto;height:auto;padding:0 14px;flex-shrink:0" aria-label="${esc(m.name)} 모임 삭제" onclick="askDelMeeting('${esc(m.code)}')">삭제</button></div>`).join("")
-    :`<p class="rn" style="padding:4px 2px">아직 이 기기에서 만든 모임이 없어요. 새 모임을 만들거나 ⚡ 1초 데모 데이터를 눌러 보세요</p>`}
+    :`<p class="rn" style="padding:4px 2px">아직 이 기기에서 만든 모임이 없어요. 새 모임을 만들어 보세요</p>`}
   </div>
 </div></div>`;};
 function openMeeting(code){const m=findMeeting(code);
