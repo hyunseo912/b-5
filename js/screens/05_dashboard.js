@@ -25,7 +25,7 @@ V.dash=()=>{const R=results(),M=S.meeting,recs=recommendations(R),ids=M.people.m
     ${/* 문구는 텍스트로만 보여주고, 메뉴 이름 옆 ↻ 버튼으로 다음 추천 메뉴 보기 */""}
     ${rec?`<p class="rec">오늘은 이 메뉴 어때요? <u>${esc(rec)}</u> <button type="button" onclick="S.recIdx++;keep()" aria-label="다른 메뉴 추천 보기" title="다른 메뉴 보기" style="font-size:15px;color:var(--accent);padding:2px 6px;vertical-align:middle;cursor:pointer">↻</button></p>`:""}
   </div>
-  <div class="card"><div class="card-h">${tile("cup","var(--t-lilac)")}<span class="ttl">오늘 술 한 잔?</span></div>
+  <div class="card"><div class="card-h">${tile("cup","var(--t-lilac)")}<span class="ttl">오늘 술 한 잔?</span><button class="more" onclick="detail('drink')">상세 ›</button></div>
     ${top>0?`<div class="grid3">${DRINK.map(x=>`<div class="dtile${R.drink[x.value]===top?" top":""}">${x.value} <span>(${R.drink[x.value]}표)</span></div>`).join("")}</div>`:`<p class="rn">아직 응답이 없어요</p>`}
   </div>
   ${R.notes.length?`<div class="card notecard"><div class="card-h">${tile("bang","var(--t-butter)")}<span class="ttl">확인해주세요 ${R.notes.length}건</span>${noteList.length>2?`<button class="more" onclick="S.notesOpen=!S.notesOpen;keep()" aria-expanded="${S.notesOpen}">${S.notesOpen?"접기":"전체 보기"}</button>`:""}</div>
