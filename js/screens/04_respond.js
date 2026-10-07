@@ -55,5 +55,21 @@ function confirmResp(){if(!S.draft.slots.length){toast("가능한 날짜와 시�
     .find(([f])=>!S.draft[f].length&&!S.draft[ANY[f]]);
   if(need){toast(need[2]);document.querySelector("."+need[1]).scrollIntoView({behavior:"smooth",block:"center"});return;}
   if(!S.draft.drink){toast("음주 여부를 골라 주세요");document.querySelector(".c-drink").scrollIntoView({behavior:"smooth",block:"center"});return;}
-  const d=S.draft,ppl=S.meeting.people,i=ppl.findIndex(p=>p.id===d.id);i>=0?ppl[i]=d:ppl.push(d);S.meeting._fresh=false;
+  reviewResp();}
+// 최종 확인 시트: 날짜는 날짜순, 각 항목은 고른 순서대로. [수정하기]는 시트만 닫고 입력은 그대로
+function reviewResp(){const d=S.draft,chips=(xs,bg,fg)=>xs.map(x=>`<span class="idchip" style="height:26px;padding:0 10px;font-size:12.5px;background:${bg};border-color:${bg};color:${fg};font-weight:600">${esc(x)}</span>`).join(""),
+    row=(lab,col,body)=>`<div class="rk" style="padding:8px 0;gap:6px"><p class="rk-t" style="font-size:13.5px;color:${col}">${lab}</p><div class="voters" style="gap:5px">${body}</div></div>`,
+    none=t=>`<span class="rn" style="font-size:13px">${t}</span>`,dm=DRINK.find(x=>x.value===d.drink);
+  const slots=d.slots.slice().sort((x,y)=>{const[a,b]=x.split("|"),[c,e]=y.split("|");return a<c?-1:a>c?1:SLOTS.indexOf(b)-SLOTS.indexOf(e);}).map(k=>slotLabel(k).replace(/^(\d+)\/0?(\d+)/,(m,a,b)=>a+"/"+b));
+  document.getElementById("layer").innerHTML=`<div class="dim" style="padding:16px" onclick="if(event.target===this)closeLayer()"><div class="sheet-box" role="dialog" aria-modal="true" style="border-radius:22px;max-height:calc(100dvh - 32px);padding:16px 16px 14px">
+    <h3 style="font-size:18px;margin-bottom:2px">이대로 제출할까요?</h3><p class="rn" style="font-size:13px;margin-bottom:4px">${esc(d.id)} 님이 고른 내용이에요</p>
+    ${row(`📅 날짜 · ${slots.length}개`,"#A33F00",chips(slots,"#FFE3D1","#A33F00"))}
+    ${row("📍 희망 장소","#2F65BF",d.anyPlace?chips(["아무 데나 괜찮아요"],"#DDEBFB","#2F65BF"):chips(d.places,"#DDEBFB","#2F65BF"))}
+    ${row("🙂 희망 메뉴","#23784F",d.anyMenu?chips(["아무거나 괜찮아요"],"#DDF2E6","#23784F"):chips(d.likes,"#DDF2E6","#23784F"))}
+    ${row("🙁 기피 메뉴","#B83A52",d.dislikes.length?chips(d.dislikes,"#FDE3E8","#B83A52"):none("없음"))}
+    ${row("🥂 음주 여부","#6A45B0",dm?chips([dm.label+"  "+dm.message],"#EEE4FB","#6A45B0"):none("선택 안 함"))}
+    ${d.note?row("📝 확인해주세요","var(--text2)",`<span style="font-size:13px">${esc(d.note)}</span>`):""}
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-soft" style="flex:1;height:46px;font-size:16px" onclick="closeLayer()">수정하기</button><button class="btn btn-primary" style="flex:1.4;height:46px;font-size:16px" onclick="submitResp()">이대로 제출</button></div>
+  </div></div>`;}
+function submitResp(){const d=S.draft,ppl=S.meeting.people,i=ppl.findIndex(p=>p.id===d.id);i>=0?ppl[i]=d:ppl.push(d);S.meeting._fresh=false;saveMeeting();
   document.getElementById("layer").innerHTML=`<div class="dim" role="dialog" aria-modal="true"><div class="pop"><p>응답이 접수되었어요! 🍽️</p><button class="btn btn-primary" onclick="closeLayer();S.joinId='';S.joinNote='';go('dash')">확인</button></div></div>`;}
