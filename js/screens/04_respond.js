@@ -34,7 +34,6 @@ V.respond=()=>{const d=S.draft,r=calRange();calInit(r);
   <div class="slot-row"><b>${adL}</b><span class="rn">복수 선택 가능</span></div>
   <div class="grid2 c-time">${SLOTS.map(s=>{const on=ad&&d.slots.includes(`${ad}|${s}`);return `<button class="chip${on?" on":""}" ${ad?"":"disabled"} aria-pressed="${!!on}" onclick="togSlot('${s}')">${s}</button>`;}).join("")}</div>
   <div class="legend"><i class="dot"></i>→<i class="dot f"></i> 점심 · 저녁 (위부터)</div>
-  <button class="btn btn-primary" onclick="document.getElementById('sec2').scrollIntoView({behavior:'smooth'})">다음</button>
   <h2 class="section-t" id="sec2" style="margin-top:20px;scroll-margin-top:70px">2. 장소와 메뉴</h2>
   <div class="sec c-place"><p class="label l-place">📍 희망 장소${sm("필수 · 최대 3개")}</p><div class="grid3">${PLACES.map(p=>chip("places",p)).join("")}${anyChip("places","아무 데나 괜찮아요")}</div></div>
   <div class="sec c-like"><p class="label l-like">🙂 희망 메뉴${sm("필수 · 최대 3개")}</p><div class="grid3">${MENUS.map(m=>chip("likes",m)).join("")}${anyChip("likes","아무거나 괜찮아요")}</div></div>
