@@ -33,6 +33,6 @@ V.dash=()=>{const R=results(),M=S.meeting,recs=recommendations(R),ids=M.people.m
   <div class="card"><div class="card-h">${tile("sum","#E6EBF7")}<span class="ttl">결과 요약</span><span class="rn" style="font-weight:700;color:var(--accent)">${R.n}명 참여</span></div>
     <div class="sum">${sl.filter(([t])=>t!=="r").map(([t,s])=>`<p class="${t==="t"?"st":t==="l"?"sl":t==="i"?"si":"link"}">${esc(s)}</p>`).join("")}</div>
     <button class="btn btn-primary" style="margin-top:4px" onclick="copy(summaryText(results()));toast('요약을 복사했어요.\\n단톡방에 붙여넣으세요')">단톡방에 결과 공유하기</button>
-    <button class="btn btn-soft" onclick="copy('[${esc(M.name)}] 모임 초대\\n모임 코드: ${M.code}\\n초대 링크: ${esc(M.link)}');toast('초대 코드와 링크를 복사했어요.\\n단톡방에 붙여넣으세요')">초대 링크 공유하기</button>
+    <button class="btn btn-soft" onclick="copyInvite()">초대장 공유하기</button>
   </div>
 </div></div>`;};

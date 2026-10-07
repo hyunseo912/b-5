@@ -9,6 +9,11 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 function toast(m){const t=document.createElement("div");t.className="toast";t.style.whiteSpace="pre-line";t.style.width="max-content";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800);}
 async function copy(text,btn){try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(_){}ta.remove();}
   if(btn){const o=btn.textContent;btn.textContent="복사됨";setTimeout(()=>btn.textContent=o,1500);}}
+// 초대장 문구 (단톡방에 붙여넣기용): 02 모임 생성·05 대시보드의 초대장 복사 버튼이 함께 사용
+const inviteText=m=>`[당장만나 초대장]\n\n${m.name}\n${m.link}\n모임 코드: ${m.code}
+
+*모임코드를 복사해주세요!`;
+function copyInvite(btn){copy(inviteText(S.meeting),btn);toast("초대장을 복사했어요.\n단톡방에 붙여넣으세요");}
 function go(s){S.screen=s;S.err={};render();window.scrollTo(0,0);}
 const head=(t,back)=>`<div class="head">${back?`<button class="back" aria-label="뒤로" onclick="go('${back}')">‹</button>`:""}<h1>${esc(t)}</h1></div>`;
 const ICON={

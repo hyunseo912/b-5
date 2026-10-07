@@ -18,12 +18,15 @@ V.create=()=>{const m=S.meeting&&S.meeting._fresh?S.meeting:null,today=ymd(),st=
   ${S.err.start?`<p class="err">${S.err.start}</p>`:""}
   <button class="btn btn-primary" style="${CR.btn}" onclick="makeLink()">초대장 링크 생성</button>
   ${m?`<div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">
-    <div class="box" style="${CR.box}"><div><p class="k" style="${CR.k}">모임 코드 (6자리)</p><p class="v" style="${CR.v}">${m.code}</p></div><button class="btn-sm" style="${CR.sm}" onclick="copy('${m.code}',this)">복사</button></div>
-    <div class="box" style="${CR.box}"><div><p class="k" style="${CR.k}">초대 링크</p><p class="v" style="${CR.v}">${esc(m.link)}</p></div><button class="btn-sm" style="${CR.sm}" onclick="copy('${esc(m.link)}',this)">복사</button></div>
+    ${/* 모임 코드·초대 링크를 한 칸에 보여주고, 버튼 하나로 둘 다 복사 */""}
+    <div class="box" style="height:auto;display:block;padding:10px 14px;border-radius:14px">
+      <p class="k" style="${CR.k}">모임 코드</p><p class="v" style="font-size:18px;letter-spacing:.06em;margin-bottom:4px">${m.code}</p>
+      <p class="k" style="${CR.k}">초대 링크</p><p class="v" style="${CR.v}">${esc(m.link)}</p></div>
+    <button class="btn btn-primary" style="${CR.btn}" onclick="copyInvite(this)">초대장 복사하기</button>
     <p class="note" style="font-size:14px">복사해서 모임 참여자에게 전달하세요</p>
   </div>
-  <div style="margin-top:24px;display:flex;flex-direction:column;gap:6px">
-    <button class="btn btn-soft" style="${CR.btn}" onclick="go('join')">초대 링크로 입장하기</button>
+  <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px">
+    <button class="btn btn-soft" style="${CR.btn}" onclick="S.joinCode=S.meeting.code;go('join')">초대 링크로 입장하기</button>
     <p class="note2" style="font-size:13px">방장님도 초대 링크로 입장해서 투표해 주세요</p>
   </div>`:""}
 </div></div>`;};
