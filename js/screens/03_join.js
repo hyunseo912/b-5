@@ -7,7 +7,7 @@ V.join=()=>`<div class="screen fixed">${head("초대장 열기","home")}
   <button class="btn btn-primary" style="margin-top:6px" onclick="enter()">입장하기</button>
 </div></div>`;
 function enter(){const code=(S.joinCode??(S.meeting?S.meeting.code:"")).trim(),id=(S.joinId||"").trim();S.err={};
-  if(!S.meeting||code!==S.meeting.code)S.err.code="모임 코드를 다시 확인해 주세요";
+  {const m=findMeeting(code);if(m)S.meeting=m;else S.err.code="모임 코드를 다시 확인해 주세요";} // 이 기기에 저장된 모임이면 어느 모임이든 입장
   if(!/^[가-힣A-Za-z]{1,10}\d{4}$/.test(id))S.err.id="이름 뒤에 전화번호 뒷 4자리를 붙여 주세요 (예: 김삼일3131)";
   if(Object.keys(S.err).length){render();return;}
   const prev=S.meeting.people.find(p=>p.id===id);

@@ -17,4 +17,4 @@ V.home=()=>`<div class="entry"><div class="hero" style="height:clamp(170px,calc(
     <div class="brand"><b aria-label="당장만나"><i>당</i><i>장</i><i>만</i><i>나</i></b><p>날짜 · 장소 · 메뉴, 지금 바로 정해요</p></div>
   </div></div>`;
 function loadDemo(){const m=DATA.meeting;S.meeting=newMeeting(m.name,m.code);S.meeting.link=m.inviteLink;S.meeting.people=JSON.parse(JSON.stringify(DATA.participants));S.recIdx=0;S.notesOpen=false;go("dash");}
-function openDash(){if(!S.meeting){toast("아직 만든 모임이 없어요.\n새 모임을 만들거나 데모 데이터를 채워 보세요");return;}go("dash");}
+function openDash(){S.findCode="";go("find");} // 모임 결과 보기 → 모임 고르기 화면(07)

@@ -31,6 +31,11 @@ const LS={
 // 지금 모임을 모임 목록(dm:meetings)에 저장하고, 마지막으로 본 모임(dm:last)·화면(dm:screen)도 기억
 function saveMeeting(){if(!S.meeting)return;const list=LS.get("meetings",[]),ms=Array.isArray(list)?list.filter(m=>m&&m.code!==S.meeting.code):[];
   ms.push(S.meeting);LS.set("meetings",ms);LS.set("last",S.meeting.code);LS.set("screen",S.screen);}
+// 이 기기에 저장된 모임 목록(최근 순)과 코드로 모임 찾기 — 07 모임 결과 보기·03 초대장 열기에서 사용
+function myMeetings(){const list=LS.get("meetings",[]),ms=(Array.isArray(list)?list:[]).filter(m=>m&&m.code&&Array.isArray(m.people));
+  if(S.meeting&&!ms.some(m=>m.code===S.meeting.code))ms.push(S.meeting);return ms.reverse();}
+function findMeeting(code){const c=String(code||"").trim().toUpperCase();if(!c)return null;
+  if(S.meeting&&S.meeting.code===c)return S.meeting;return myMeetings().find(m=>m.code===c)||null;}
 
 /* ===== 화면 그리기 ===== */
 function render(){document.getElementById("app").innerHTML=V[S.screen]();saveMeeting();}

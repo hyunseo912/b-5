@@ -65,7 +65,7 @@ index.html                  화면 틀 + <script> 순서대로 로드 (순서 �
 img/hero.jpg                01 진입 배경 그림 (AI 생성)
 css/style.css         ★     스타일 전체
 js/data.js            ★     DATA: config(장소·메뉴·시간대·음주·MENU_DB) + meeting·participants(⚡ 데모 10명)
-js/core.js            ★     상태 S, 화면 등록 V, 유틸(esc, toast, copy, go, head, ICON, tile, genCode, newMeeting), render·keep·closeLayer
+js/core.js            ★     상태 S, 화면 등록 V, 유틸(esc, toast, copy, go, head, ICON, tile, genCode, newMeeting, ymd), 저장(LS, saveMeeting, myMeetings, findMeeting), render·keep·closeLayer
 js/rank.js            ★     집계: rank, tally, voters, results, recommendations, summaryLines, summaryText, slotLabel
 js/screens/01_home.js       01 진입 — V.home, loadDemo(⚡ 데모), openDash
 js/screens/02_create.js     02 모임 생성 — V.create, makeLink
@@ -73,6 +73,7 @@ js/screens/03_join.js       03 초대장 열기 — V.join, enter
 js/screens/04_respond.js    04 응답(달력·장소·메뉴·음주) + 접수 팝업 — calendar, V.respond, pickDay, togSlot, tog, confirmResp
 js/screens/05_dashboard.js  05 대시보드 — V.dash
 js/screens/06_detail.js     06 상세 시트 — rankBlock, detail
+js/screens/07_find.js       07 모임 결과 보기 — V.find(코드로 찾기 + 이 기기의 모임 목록), openMeeting
 js/app.js                   시작 (render 호출, 맨 마지막에 로드)
 ```
 
