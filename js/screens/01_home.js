@@ -10,7 +10,7 @@ V.home=()=>`<div class="entry"><div class="hero" style="height:calc(min(100vw,48
     <div style="${HM.grp}"><p style="${HM.lab}">방장</p>
       <button class="btn btn-primary" style="${HM.btn}" onclick="go('create')">+ 새로운 모임 만들기</button></div>
     <div style="${HM.grp}"><p style="${HM.lab}">투표하기</p>
-      <button class="btn btn-soft" style="${HM.btn}" onclick="S.joinCode='';go('join')">초대 코드로 입장하기</button>
+      <button class="btn btn-soft" style="${HM.btn}" onclick="S.joinCode='';S.joinFrom='home';go('join')">초대 코드로 입장하기</button>
       <p class="note2" style="font-size:11.5px">방장님도 여기서 투표해요</p></div>
     <div style="display:flex;gap:8px;margin-top:4px;flex-shrink:0">
       <button class="btn btn-ghost" style="${HM.sub}" onclick="openDash()">모임 결과 보기</button></div>

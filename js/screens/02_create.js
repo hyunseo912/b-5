@@ -26,7 +26,7 @@ V.create=()=>{const m=S.meeting&&S.meeting._fresh?S.meeting:null,today=ymd(),st=
     <p class="note" style="font-size:14px">복사해서 모임 참여자에게 전달하세요</p>
   </div>
   <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px">
-    <button class="btn btn-soft" style="${CR.btn}" onclick="S.joinCode=S.meeting.code;go('join')">초대 링크로 입장하기</button>
+    <button class="btn btn-soft" style="${CR.btn}" onclick="S.joinCode=S.meeting.code;S.joinFrom='create';go('join')">초대 링크로 입장하기</button>
     <p class="note2" style="font-size:13px">방장님도 초대 링크로 입장해서 투표해 주세요</p>
   </div>`:""}
 </div></div>`;};

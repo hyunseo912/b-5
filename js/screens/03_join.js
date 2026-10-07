@@ -1,5 +1,6 @@
 /* ===== 03 초대장 열기 ===== */
-V.join=()=>`<div class="screen fixed">${head("초대장 열기","home")}
+// ‹ 뒤로: 모임 생성 화면에서 들어왔으면 그 화면(코드·초대장이 보이는 상태)으로, 아니면 첫 화면으로
+V.join=()=>`<div class="screen fixed">${head("초대장 열기",S.joinFrom==="create"?"create":"home")}
 <div class="body" style="gap:22px;padding-top:20px">
   <div class="field"><label for="jcode">모임 코드</label><input id="jcode" class="inp" maxlength="6" placeholder="예: A1B2C3" value="${esc(S.joinCode||"")}" oninput="S.joinCode=this.value.toUpperCase();this.value=S.joinCode" autocapitalize="characters">${S.err.code?`<p class="err">${S.err.code}</p>`:""}</div>
   <div class="field"><label for="jid">참여자 ID <small>(이름 + 전화번호 뒷 4자리)</small></label><input id="jid" class="inp" placeholder="예: 김삼일3131" value="${esc(S.joinId||"")}" oninput="S.joinId=this.value.trim()">${S.err.id?`<p class="err">${S.err.id}</p>`:""}</div>
