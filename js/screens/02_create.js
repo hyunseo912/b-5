@@ -33,4 +33,4 @@ function makeLink(){const n=(S.draftName||"").trim(),st=S.draftStart||ymd();S.er
   const en=draftEnd(st);
   if(!/^\d{4}-\d{2}-\d{2}$/.test(en)||en<st){S.err={start:"마감일은 시작일 이후로 골라 주세요"};render();return;}
   if(en>endMax(st)){S.err={start:"마감일은 시작일부터 3개월 안으로 골라 주세요"};render();return;}
-  S.meeting=newMeeting(n);S.meeting.start=st;S.meeting.end=en;S.draftEnd="";S.meeting._fresh=true;S.joinCode=S.meeting.code;render();}
+  S.meeting=newMeeting(n);S.meeting.start=st;S.meeting.end=en;S.draftEnd="";S.meeting._fresh=true;render();}
